@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careers — MUSIC SERENIA</title>
+<style>
+  :root{
+    --bg:#eaf6fd;
+    --bg-soft:#ffffff;
+    --blue:#2f9bd6;
+    --blue-dark:#16679e;
+    --gold:#ffb84d;
+    --text:#12374f;
+    --muted:#5b7f96;
+    --line:rgba(18,55,79,0.10);
+    --shadow:0 10px 30px rgba(22,103,158,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;min-height:100vh;}
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 6vw;background:var(--bg-soft);border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);}
+  .logo-wrap{
+    width:44px;height:44px;border-radius:50%;overflow:hidden;background:var(--bg);
+    display:flex;align-items:center;justify-content:center;border:1px solid var(--line);flex-shrink:0;
+  }
+  .logo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .brand-name{font-family:Georgia,serif;font-size:1.3rem;letter-spacing:0.12em;font-weight:700;}
+  .brand-name span{color:var(--blue);}
+  nav{display:flex;gap:24px;align-items:center;}
+  .nav-link{color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:600;}
+  .nav-link:hover{color:var(--blue-dark);}
+  .btn{
+    padding:10px 22px;border-radius:999px;font-size:0.85rem;font-weight:700;
+    letter-spacing:0.02em;cursor:pointer;border:1px solid transparent;text-decoration:none;
+    transition:transform .15s ease, opacity .15s ease;display:inline-block;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-outline{color:var(--blue-dark);border-color:var(--blue);background:#fff;}
+  .btn-solid{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(47,155,214,0.35);}
+
+  main{max-width:760px;margin:0 auto;padding:7vw 6vw 80px;}
+  .eyebrow{
+    color:var(--blue-dark);letter-spacing:0.2em;font-size:0.75rem;font-weight:700;
+    margin-bottom:16px;text-transform:uppercase;background:#dff1fb;
+    display:inline-block;padding:6px 14px;border-radius:999px;
+  }
+  h1#pageTitle{font-family:Georgia,serif;font-size:clamp(2rem,5vw,2.8rem);margin-bottom:26px;line-height:1.15;}
+  #pageBody{
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:18px;
+    padding:36px 32px;box-shadow:var(--shadow);color:var(--text);
+    font-size:1.02rem;line-height:1.8;white-space:pre-line;
+  }
+  #pageBody.loading{color:var(--muted);font-style:italic;}
+
+  footer{
+    background:var(--bg-soft);border-top:1px solid var(--line);
+    padding:30px 6vw;text-align:center;color:var(--muted);font-size:0.8rem;
+  }
+  @media(max-width:700px){ header{flex-direction:column;gap:16px;} }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="landing.html" class="brand">
+    <div class="logo-wrap"><img src="logo.png" alt="Music Serenia logo" onerror="this.style.display=\"none\""></div>
+    <div class="brand-name">MUSIC <span>SERENIA</span></div>
+  </a>
+  <nav>
+    <a href="landing.html#features" class="nav-link">Features</a>
+    <a href="landing.html#plans" class="nav-link">Plans</a>
+    <a href="landing.html#testimonials" class="nav-link">Reviews</a>
+    <a href="register.html" class="btn btn-outline">Register</a>
+    <a href="signup.html" class="btn btn-solid">Sign Up</a>
+  </nav>
+</header>
+
+<main>
+  <div class="eyebrow">MUSIC SERENIA</div>
+  <h1 id="pageTitle">Careers</h1>
+  <div id="pageBody" class="loading">Loading content…</div>
+</main>
+
+<footer>© 2026 MUSIC SERENIA — All rights reserved.</footer>
+
+<script>
+fetch("/api/pages/careers")
+  .then(res => res.json())
+  .then(data => {
+    const bodyEl = document.getElementById("pageBody");
+    const titleEl = document.getElementById("pageTitle");
+    if (data.error) {
+      bodyEl.textContent = "Content for this page has not been added yet.";
+    } else {
+      titleEl.textContent = data.title || "Careers";
+      bodyEl.textContent = data.body || "";
+    }
+    bodyEl.classList.remove("loading");
+  })
+  .catch(() => {
+    const bodyEl = document.getElementById("pageBody");
+    bodyEl.textContent = "Could not load content right now. Please try again later.";
+    bodyEl.classList.remove("loading");
+  });
+</script>
+
+</body>
+</html>

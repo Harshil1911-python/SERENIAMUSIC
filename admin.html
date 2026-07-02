@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Serenia — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14151a;
+    --surface:#1c1e25;
+    --surface-2:#23262f;
+    --surface-3:#2b2e38;
+    --line:#333744;
+    --accent:#e3a548;
+    --accent-soft:#e3a5482e;
+    --accent-2:#6fbfa0;
+    --danger:#d9695f;
+    --danger-soft:#d9695f22;
+    --text:#edeae2;
+    --muted:#8d909b;
+    --radius:10px;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-soft);color:var(--text);}
+
+  button{font-family:inherit;cursor:pointer;}
+  input, textarea{font-family:inherit;}
+
+  a{color:var(--accent);}
+
+  /* ---------- vinyl groove signature motif ---------- */
+  .grooves{
+    position:absolute; inset:0; overflow:hidden; pointer-events:none;
+  }
+  .grooves svg{position:absolute; opacity:.35;}
+
+  /* ---------- login ---------- */
+  #login-view{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    padding:24px;
+  }
+  .login-card{
+    position:relative;
+    width:100%; max-width:380px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:40px 36px 32px;
+    z-index:1;
+  }
+  .login-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 6px;
+  }
+  .login-title{
+    font-family:var(--font-display);
+    font-size:30px;
+    font-weight:500;
+    margin:0 0 28px;
+    letter-spacing:.01em;
+  }
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block; font-size:12px; color:var(--muted);
+    margin-bottom:6px; letter-spacing:.02em;
+  }
+  .field input, .field textarea{
+    width:100%;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:7px;
+    padding:11px 13px;
+    color:var(--text);
+    font-size:14px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--accent);}
+  .field textarea{resize:vertical; min-height:90px; line-height:1.5;}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:none; border-radius:7px;
+    padding:11px 18px;
+    font-size:14px; font-weight:600;
+    transition:filter .15s ease, transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--accent); color:#1a1508;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-primary:disabled{opacity:.5; cursor:not-allowed;}
+  .btn-ghost{background:transparent; color:var(--muted); border:1px solid var(--line);}
+  .btn-ghost:hover{color:var(--text); border-color:var(--muted);}
+  .btn-danger{background:var(--danger-soft); color:var(--danger); border:1px solid transparent;}
+  .btn-danger:hover{background:var(--danger); color:#1a0e0c;}
+  .btn-block{width:100%;}
+
+  .error-msg{
+    background:var(--danger-soft);
+    color:#f0a49d;
+    border:1px solid #d9695f4d;
+    border-radius:7px;
+    padding:10px 13px;
+    font-size:13px;
+    margin-bottom:16px;
+    display:none;
+  }
+  .error-msg.show{display:block;}
+
+  .hint{font-size:12px; color:var(--muted); margin-top:18px; line-height:1.5;}
+
+  /* ---------- dashboard shell ---------- */
+  #app-view{display:none; min-height:100vh;}
+  #app-view.show{display:flex;}
+
+  .sidebar{
+    width:230px; flex-shrink:0;
+    background:var(--surface);
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column;
+    padding:26px 16px;
+  }
+  .brand{
+    font-family:var(--font-display);
+    font-size:20px; font-weight:500;
+    padding:0 10px 24px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand-mark{
+    width:20px; height:20px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, var(--accent), #7a5a1e 75%);
+    flex-shrink:0;
+  }
+  .nav-item{
+    display:flex; align-items:center; gap:11px;
+    padding:10px 12px; border-radius:7px;
+    color:var(--muted); font-size:14px; font-weight:500;
+    margin-bottom:2px; border:none; background:none; width:100%; text-align:left;
+  }
+  .nav-item svg{width:16px; height:16px; flex-shrink:0;}
+  .nav-item:hover{color:var(--text); background:var(--surface-2);}
+  .nav-item.active{color:var(--accent); background:var(--accent-soft);}
+  .nav-spacer{flex:1;}
+  .nav-foot{border-top:1px solid var(--line); padding-top:14px; margin-top:14px;}
+
+  .main{
+    flex:1; min-width:0;
+    padding:36px 44px 60px;
+    overflow-y:auto;
+  }
+  .main-header{margin-bottom:30px;}
+  .main-eyebrow{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 6px;
+  }
+  .main-title{font-family:var(--font-display); font-size:28px; font-weight:500; margin:0;}
+  .main-sub{color:var(--muted); font-size:14px; margin:8px 0 0;}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  /* stat cards */
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:8px;}
+  .stat-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px;
+  }
+  .stat-num{font-family:var(--font-display); font-size:34px; font-weight:500; color:var(--accent);}
+  .stat-label{font-size:12.5px; color:var(--muted); margin-top:4px; letter-spacing:.02em;}
+
+  /* cards / forms */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px 28px; margin-bottom:20px;
+  }
+  .card-title{font-size:15px; font-weight:600; margin:0 0 18px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:720px){.row2{grid-template-columns:1fr;}}
+
+  .file-drop{
+    border:1px dashed var(--line); border-radius:7px; padding:14px;
+    background:var(--surface-2); font-size:13px; color:var(--muted);
+  }
+  .file-drop input{width:100%; color:var(--muted); font-size:13px;}
+
+  /* list rows */
+  .list{display:flex; flex-direction:column; gap:10px;}
+  .list-row{
+    display:flex; align-items:center; gap:14px;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 16px;
+  }
+  .thumb{
+    width:44px; height:44px; border-radius:6px; flex-shrink:0;
+    background:var(--surface-3) center/cover no-repeat;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted); font-size:11px;
+    border:1px solid var(--line);
+  }
+  .avatar{
+    width:36px; height:36px; border-radius:50%; flex-shrink:0;
+    background:var(--surface-3);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:12px; color:var(--accent);
+    border:1px solid var(--line);
+  }
+  .row-body{flex:1; min-width:0;}
+  .row-title{font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .row-sub{font-size:12.5px; color:var(--muted); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .row-actions{display:flex; gap:8px; flex-shrink:0;}
+  .icon-btn{
+    width:32px; height:32px; border-radius:6px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--muted);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .icon-btn:hover{color:var(--danger); border-color:var(--danger);}
+  .icon-btn svg{width:15px; height:15px;}
+
+  .empty-state{
+    text-align:center; padding:50px 20px; color:var(--muted);
+    border:1px dashed var(--line); border-radius:var(--radius); font-size:13.5px;
+  }
+
+  /* pages editor */
+  .page-pill-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;}
+  .page-pill{
+    padding:7px 13px; border-radius:20px; border:1px solid var(--line);
+    background:var(--surface); color:var(--muted); font-size:12.5px; font-weight:500;
+  }
+  .page-pill.active{background:var(--accent-soft); color:var(--accent); border-color:transparent;}
+
+  .toast{
+    position:fixed; bottom:24px; right:24px;
+    background:var(--surface-3); border:1px solid var(--line);
+    color:var(--text); padding:12px 18px; border-radius:8px; font-size:13.5px;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    opacity:0; transform:translateY(8px);
+    transition:opacity .2s ease, transform .2s ease;
+    pointer-events:none; z-index:50;
+  }
+  .toast.show{opacity:1; transform:translateY(0);}
+  .toast.err{border-color:#d9695f66; color:#f0a49d;}
+
+  .field-msg{font-size:12.5px; margin-top:10px; display:none;}
+  .field-msg.show{display:block;}
+  .field-msg.ok{color:var(--accent-2);}
+  .field-msg.bad{color:var(--danger);}
+
+  ::-webkit-scrollbar{width:9px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--surface-3); border-radius:5px;}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login-view">
+  <div class="grooves" aria-hidden="true">
+    <svg viewBox="0 0 600 600" width="600" height="600" style="right:-160px; top:-140px;">
+      <circle cx="300" cy="300" r="280" fill="none" stroke="#e3a548" stroke-width="1"/>
+      <circle cx="300" cy="300" r="230" fill="none" stroke="#e3a548" stroke-width="1"/>
+      <circle cx="300" cy="300" r="180" fill="none" stroke="#e3a548" stroke-width="1"/>
+      <circle cx="300" cy="300" r="130" fill="none" stroke="#e3a548" stroke-width="1"/>
+    </svg>
+    <svg viewBox="0 0 600 600" width="500" height="500" style="left:-200px; bottom:-220px;">
+      <circle cx="300" cy="300" r="280" fill="none" stroke="#6fbfa0" stroke-width="1"/>
+      <circle cx="300" cy="300" r="220" fill="none" stroke="#6fbfa0" stroke-width="1"/>
+      <circle cx="300" cy="300" r="160" fill="none" stroke="#6fbfa0" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="login-card">
+    <p class="login-eyebrow">Music Serenia</p>
+    <h1 class="login-title">Admin sign in</h1>
+
+    <div class="error-msg" id="login-error"></div>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="login-username">Username</label>
+        <input id="login-username" type="text" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="login-btn">Sign in</button>
+    </form>
+    <p class="hint">Default account is <strong>admin</strong> / <strong>admin123</strong> — change the password from Account once you're in.</p>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="app-view">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark"></span> Music Serenia</div>
+
+    <button class="nav-item active" data-panel="panel-dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" data-panel="panel-upload">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      Upload music
+    </button>
+    <button class="nav-item" data-panel="panel-songs">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="18" r="3"/><path d="M11 18V4l9-2v14"/><circle cx="17" cy="16" r="3"/></svg>
+      Songs
+    </button>
+    <button class="nav-item" data-panel="panel-users">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="8" r="2.6"/><path d="M15.5 14.2c2.6.4 4.5 2.7 4.5 5.8"/></svg>
+      Users
+    </button>
+    <button class="nav-item" data-panel="panel-pages">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg>
+      Site pages
+    </button>
+
+    <div class="nav-spacer"></div>
+
+    <div class="nav-foot">
+      <button class="nav-item" data-panel="panel-account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.96 19.34a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.66 8.96a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1.04-1.56V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.04 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.1.36.55.62 1.56.62H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15z"/></svg>
+        Account
+      </button>
+      <button class="btn btn-ghost btn-block" id="logout-btn" style="margin-top:8px;">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- Dashboard -->
+    <section class="panel active" id="panel-dashboard">
+      <div class="main-header">
+        <p class="main-eyebrow">Overview</p>
+        <h2 class="main-title">Dashboard</h2>
+        <p class="main-sub">A quick look at what's on Music Serenia right now.</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="stat-songs">—</div><div class="stat-label">Songs uploaded</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-users">—</div><div class="stat-label">Registered users</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-pages">—</div><div class="stat-label">Site pages</div></div>
+      </div>
+    </section>
+
+    <!-- Upload music -->
+    <section class="panel" id="panel-upload">
+      <div class="main-header">
+        <p class="main-eyebrow">Library</p>
+        <h2 class="main-title">Upload music</h2>
+        <p class="main-sub">Add a new track with its cover art and audio file.</p>
+      </div>
+      <div class="card">
+        <form id="upload-form">
+          <div class="row2">
+            <div class="field">
+              <label for="song-name">Song name</label>
+              <input id="song-name" type="text" required>
+            </div>
+            <div class="field">
+              <label for="song-desc">Description</label>
+              <input id="song-desc" type="text" placeholder="Optional">
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field">
+              <label for="song-cover">Cover image</label>
+              <div class="file-drop"><input id="song-cover" type="file" accept=".png,.jpg,.jpeg,.webp"></div>
+            </div>
+            <div class="field">
+              <label for="song-audio">Audio file</label>
+              <div class="file-drop"><input id="song-audio" type="file" accept=".mp3,.wav,.ogg,.m4a" required></div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="upload-btn">Upload song</button>
+          <div class="field-msg" id="upload-msg"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Songs -->
+    <section class="panel" id="panel-songs">
+      <div class="main-header">
+        <p class="main-eyebrow">Library</p>
+        <h2 class="main-title">Songs</h2>
+        <p class="main-sub">Everything currently uploaded to Music Serenia.</p>
+      </div>
+      <div class="list" id="songs-list"></div>
+    </section>
+
+    <!-- Users -->
+    <section class="panel" id="panel-users">
+      <div class="main-header">
+        <p class="main-eyebrow">Accounts</p>
+        <h2 class="main-title">Users</h2>
+        <p class="main-sub">People who have signed up for Music Serenia.</p>
+      </div>
+      <div class="list" id="users-list"></div>
+    </section>
+
+    <!-- Site pages -->
+    <section class="panel" id="panel-pages">
+      <div class="main-header">
+        <p class="main-eyebrow">Content</p>
+        <h2 class="main-title">Site pages</h2>
+        <p class="main-sub">Edit the copy shown on the site's footer pages.</p>
+      </div>
+      <div class="page-pill-row" id="page-pills"></div>
+      <div class="card">
+        <form id="page-form">
+          <div class="field">
+            <label for="page-title">Title</label>
+            <input id="page-title" type="text" required>
+          </div>
+          <div class="field">
+            <label for="page-body">Body</label>
+            <textarea id="page-body" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" id="page-save-btn">Save page</button>
+          <div class="field-msg" id="page-msg"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Account -->
+    <section class="panel" id="panel-account">
+      <div class="main-header">
+        <p class="main-eyebrow">Settings</p>
+        <h2 class="main-title">Account</h2>
+        <p class="main-sub">Update the password for this admin account.</p>
+      </div>
+      <div class="card" style="max-width:420px;">
+        <form id="password-form">
+          <div class="field">
+            <label for="current-password">Current password</label>
+            <input id="current-password" type="password" required>
+          </div>
+          <div class="field">
+            <label for="new-password">New password</label>
+            <input id="new-password" type="password" minlength="6" required>
+          </div>
+          <button type="submit" class="btn btn-primary" id="password-btn">Update password</button>
+          <div class="field-msg" id="password-msg"></div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  // Token kept in memory only for this session (not persisted to storage).
+  let TOKEN = null;
+  let PAGES_CACHE = [];
+  let ACTIVE_PAGE_KEY = null;
+
+  const $ = (id) => document.getElementById(id);
+  const loginView = $('login-view');
+  const appView = $('app-view');
+
+  function toast(msg, isErr){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.toggle('err', !!isErr);
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(()=>t.classList.remove('show'), 2600);
+  }
+
+  async function api(path, opts={}){
+    opts.headers = Object.assign({}, opts.headers, TOKEN ? {'Authorization': 'Bearer ' + TOKEN} : {});
+    const res = await fetch(path, opts);
+    let data = {};
+    try { data = await res.json(); } catch(e) {}
+    if (res.status === 401){
+      showLogin('Your session expired. Please sign in again.');
+      throw new Error(data.error || 'Unauthorized');
+    }
+    if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+    return data;
+  }
+
+  function showLogin(errMsg){
+    TOKEN = null;
+    appView.classList.remove('show');
+    loginView.style.display = 'flex';
+    if (errMsg){
+      const e = $('login-error');
+      e.textContent = errMsg;
+      e.classList.add('show');
+    }
+  }
+
+  function showApp(){
+    loginView.style.display = 'none';
+    appView.classList.add('show');
+    loadDashboard();
+  }
+
+  // ---------- Login ----------
+  $('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('login-btn');
+    const errBox = $('login-error');
+    errBox.classList.remove('show');
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try {
+      const res = await fetch('/api/admin/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          username: $('login-username').value.trim(),
+          password: $('login-password').value
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Sign in failed.');
+      TOKEN = data.token;
+      showApp();
+    } catch(err){
+      errBox.textContent = err.message;
+      errBox.classList.add('show');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Sign in';
+    }
+  });
+
+  $('logout-btn').addEventListener('click', async () => {
+    try { await api('/api/admin/logout', {method:'POST'}); } catch(e) {}
+    showLogin();
+  });
+
+  // ---------- Nav ----------
+  document.querySelectorAll('.nav-item[data-panel]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item[data-panel]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const panel = $(btn.dataset.panel);
+      panel.classList.add('active');
+      if (btn.dataset.panel === 'panel-dashboard') loadDashboard();
+      if (btn.dataset.panel === 'panel-songs') loadSongs();
+      if (btn.dataset.panel === 'panel-users') loadUsers();
+      if (btn.dataset.panel === 'panel-pages') loadPages();
+    });
+  });
+
+  // ---------- Dashboard ----------
+  async function loadDashboard(){
+    try {
+      const data = await api('/api/admin/stats');
+      $('stat-songs').textContent = data.songs;
+      $('stat-users').textContent = data.users;
+      $('stat-pages').textContent = data.pages;
+    } catch(err){ toast(err.message, true); }
+  }
+
+  // ---------- Upload music ----------
+  $('upload-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('upload-btn');
+    const msg = $('upload-msg');
+    msg.className = 'field-msg';
+    const audio = $('song-audio').files[0];
+    if (!audio){
+      msg.textContent = 'Please choose an audio file.';
+      msg.classList.add('show','bad');
+      return;
+    }
+    const fd = new FormData();
+    fd.append('name', $('song-name').value.trim());
+    fd.append('description', $('song-desc').value.trim());
+    fd.append('audio', audio);
+    const cover = $('song-cover').files[0];
+    if (cover) fd.append('cover', cover);
+
+    btn.disabled = true; btn.textContent = 'Uploading…';
+    try {
+      const res = await fetch('/api/admin/upload-music', {
+        method:'POST',
+        headers:{'Authorization':'Bearer ' + TOKEN},
+        body: fd
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed.');
+      msg.textContent = 'Song uploaded.';
+      msg.classList.add('show','ok');
+      $('upload-form').reset();
+      toast('Song uploaded');
+    } catch(err){
+      msg.textContent = err.message;
+      msg.classList.add('show','bad');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Upload song';
+    }
+  });
+
+  // ---------- Songs ----------
+  async function loadSongs(){
+    const list = $('songs-list');
+    list.innerHTML = '<div class="empty-state">Loading songs…</div>';
+    try {
+      const data = await api('/api/admin/songs');
+      if (!data.songs.length){
+        list.innerHTML = '<div class="empty-state">No songs yet. Upload your first track from "Upload music".</div>';
+        return;
+      }
+      list.innerHTML = '';
+      data.songs.forEach(song => {
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        const thumbStyle = song.cover_filename ? `style="background-image:url('/${song.cover_filename}')"` : '';
+        row.innerHTML = `
+          <div class="thumb" ${thumbStyle}>${song.cover_filename ? '' : '♪'}</div>
+          <div class="row-body">
+            <div class="row-title"></div>
+            <div class="row-sub"></div>
+          </div>
+          <div class="row-actions">
+            <button class="icon-btn" title="Delete song">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/></svg>
+            </button>
+          </div>`;
+        row.querySelector('.row-title').textContent = song.name;
+        row.querySelector('.row-sub').textContent = song.description || 'No description';
+        row.querySelector('.icon-btn').addEventListener('click', () => deleteSong(song.id, song.name));
+        list.appendChild(row);
+      });
+    } catch(err){
+      list.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+  }
+
+  async function deleteSong(id, name){
+    if (!confirm(`Delete "${name}"? This can't be undone.`)) return;
+    try {
+      await api('/api/admin/songs/' + encodeURIComponent(id), {method:'DELETE'});
+      toast('Song deleted');
+      loadSongs();
+      loadDashboard();
+    } catch(err){ toast(err.message, true); }
+  }
+
+  // ---------- Users ----------
+  async function loadUsers(){
+    const list = $('users-list');
+    list.innerHTML = '<div class="empty-state">Loading users…</div>';
+    try {
+      const data = await api('/api/admin/users');
+      if (!data.users.length){
+        list.innerHTML = '<div class="empty-state">No one has signed up yet.</div>';
+        return;
+      }
+      list.innerHTML = '';
+      data.users.forEach(user => {
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.innerHTML = `
+          <div class="avatar"></div>
+          <div class="row-body">
+            <div class="row-title"></div>
+            <div class="row-sub"></div>
+          </div>
+          <div class="row-actions">
+            <button class="icon-btn" title="Delete user">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/></svg>
+            </button>
+          </div>`;
+        row.querySelector('.avatar').textContent = (user.username || '?').slice(0,2).toUpperCase();
+        row.querySelector('.row-title').textContent = user.username;
+        row.querySelector('.row-sub').textContent = user.email || '';
+        row.querySelector('.icon-btn').addEventListener('click', () => deleteUser(user.username));
+        list.appendChild(row);
+      });
+    } catch(err){
+      list.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+  }
+
+  async function deleteUser(username){
+    if (!confirm(`Delete user "${username}"? This can't be undone.`)) return;
+    try {
+      await api('/api/admin/users/' + encodeURIComponent(username), {method:'DELETE'});
+      toast('User deleted');
+      loadUsers();
+      loadDashboard();
+    } catch(err){ toast(err.message, true); }
+  }
+
+  // ---------- Site pages ----------
+  async function loadPages(){
+    const pills = $('page-pills');
+    pills.innerHTML = '<span class="page-pill">Loading…</span>';
+    try {
+      const data = await api('/api/admin/pages');
+      PAGES_CACHE = data.pages;
+      pills.innerHTML = '';
+      PAGES_CACHE.forEach(p => {
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'page-pill' + (p.key === ACTIVE_PAGE_KEY ? ' active' : '');
+        pill.textContent = p.title || p.key;
+        pill.addEventListener('click', () => selectPage(p.key));
+        pills.appendChild(pill);
+      });
+      if (!ACTIVE_PAGE_KEY && PAGES_CACHE.length) selectPage(PAGES_CACHE[0].key);
+      else if (ACTIVE_PAGE_KEY) selectPage(ACTIVE_PAGE_KEY);
+    } catch(err){
+      pills.innerHTML = `<div class="empty-state">${err.message}</div>`;
+    }
+  }
+
+  function selectPage(key){
+    ACTIVE_PAGE_KEY = key;
+    document.querySelectorAll('.page-pill').forEach((el,i) => {
+      el.classList.toggle('active', PAGES_CACHE[i] && PAGES_CACHE[i].key === key);
+    });
+    const page = PAGES_CACHE.find(p => p.key === key);
+    if (page){
+      $('page-title').value = page.title || '';
+      $('page-body').value = page.body || '';
+    }
+  }
+
+  $('page-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!ACTIVE_PAGE_KEY) return;
+    const btn = $('page-save-btn');
+    const msg = $('page-msg');
+    msg.className = 'field-msg';
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      await api('/api/admin/pages/' + encodeURIComponent(ACTIVE_PAGE_KEY), {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({title: $('page-title').value.trim(), body: $('page-body').value.trim()})
+      });
+      msg.textContent = 'Page saved.';
+      msg.classList.add('show','ok');
+      toast('Page saved');
+      loadPages();
+    } catch(err){
+      msg.textContent = err.message;
+      msg.classList.add('show','bad');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save page';
+    }
+  });
+
+  // ---------- Account / password ----------
+  $('password-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('password-btn');
+    const msg = $('password-msg');
+    msg.className = 'field-msg';
+    btn.disabled = true; btn.textContent = 'Updating…';
+    try {
+      await api('/api/admin/change-password', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          current_password: $('current-password').value,
+          new_password: $('new-password').value
+        })
+      });
+      msg.textContent = 'Password updated.';
+      msg.classList.add('show','ok');
+      $('password-form').reset();
+      toast('Password updated');
+    } catch(err){
+      msg.textContent = err.message;
+      msg.classList.add('show','bad');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Update password';
+    }
+  });
+
+})();
+</script>
+</body>
+</html>

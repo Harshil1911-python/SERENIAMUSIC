@@ -1,0 +1,11 @@
+{"type": "user", "username": "harshil", "email": "harshilkhandhar2008@example.com", "password_hash": "scrypt:32768:8:1$QCfgm0eMnKW7Rw3o$15d5700da14feee58735447feb0c23b57fea36e36525279123dee4b30d40e49f9e088b9cafeb011cd35d5a2e4ae54596a01db9676688030ac3b93a0f3e94c3a3"}
+{"type": "admin", "username": "admin", "password_hash": "scrypt:32768:8:1$ePnuxYL0C3YLQS22$7726c366a923062c591b9d4361cd755eca253665c5f95e0185db47f896553eaea01bd71ac6bbc29338ba19f53734cccb41a26c11d62f5d8f5744160d61f4efb7"}
+{"type": "page", "key": "features", "title": "Features", "body": "Discover Smart Library, Cloud Sync, Offline Mode, and Mood Playlists \u2014 everything built to keep you close to your music."}
+{"type": "page", "key": "plans", "title": "Plans", "body": "Free, Premium, and Family plans are available. Upgrade any time as your library grows."}
+{"type": "page", "key": "about", "title": "About Us", "body": "Music Serenia is a calm, personal home for the songs you love. We started this project to make listening feel less noisy and more intentional."}
+{"type": "page", "key": "careers", "title": "Careers", "body": "We're not hiring right now, but we're always glad to hear from people who care about music and design. Check back soon."}
+{"type": "page", "key": "contact", "title": "Contact Us", "body": "Have a question or found a bug? Reach us any time at support@musicserenia.example and we'll get back to you shortly."}
+{"type": "page", "key": "help-center", "title": "Help Center", "body": "Looking for help with your account, playback, or downloads? Browse our guides or contact support for anything else."}
+{"type": "page", "key": "privacy", "title": "Privacy Policy", "body": "We only collect what's needed to run your account and library. We never sell your data. Full policy details coming soon."}
+{"type": "page", "key": "terms", "title": "Terms of Service", "body": "By using Music Serenia you agree to use the service fairly and respect the rights of artists and other listeners."}
+{"type": "song", "id": "e00ed49d23e4", "name": "DEMO", "description": "DEMO DESC", "audio_filename": "song_e00ed49d23e4.mp3", "cover_filename": "cover_e00ed49d23e4.png"}

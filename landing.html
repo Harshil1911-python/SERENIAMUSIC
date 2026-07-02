@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUSIC SERENIA</title>
+<style>
+  :root{
+    --bg:#eaf6fd;
+    --bg-soft:#ffffff;
+    --blue:#2f9bd6;
+    --blue-dark:#16679e;
+    --gold:#ffb84d;
+    --text:#12374f;
+    --muted:#5b7f96;
+    --line:rgba(18,55,79,0.10);
+    --shadow:0 10px 30px rgba(22,103,158,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',Arial,sans-serif;
+    min-height:100vh;
+  }
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 6vw;
+    background:var(--bg-soft);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+  }
+  .brand{display:flex;align-items:center;gap:14px;}
+  .logo-wrap{
+    width:44px;height:44px;border-radius:50%;overflow:hidden;
+    background:var(--bg);display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);flex-shrink:0;
+  }
+  .logo-wrap img{width:100%;height:100%;object-fit:cover;}
+  .brand-name{font-family:Georgia,serif;font-size:1.3rem;letter-spacing:0.12em;font-weight:700;}
+  .brand-name span{color:var(--blue);}
+  nav{display:flex;gap:24px;align-items:center;}
+  .nav-link{color:var(--muted);text-decoration:none;font-size:0.9rem;font-weight:600;}
+  .nav-link:hover{color:var(--blue-dark);}
+  .btn{
+    padding:10px 22px;border-radius:999px;font-size:0.85rem;font-weight:700;
+    letter-spacing:0.02em;cursor:pointer;border:1px solid transparent;
+    text-decoration:none;transition:transform .15s ease, opacity .15s ease, box-shadow .15s ease;
+    display:inline-block;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-outline{color:var(--blue-dark);border-color:var(--blue);background:#fff;}
+  .btn-outline:hover{box-shadow:var(--shadow);}
+  .btn-solid{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(47,155,214,0.35);}
+  .btn-solid:hover{opacity:0.92;}
+
+  main{padding:0 0 60px;}
+
+  .hero{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:7vw 6vw 5vw;gap:40px;flex-wrap:wrap;
+  }
+  .hero-copy{max-width:560px;}
+  .eyebrow{
+    color:var(--blue-dark);letter-spacing:0.2em;font-size:0.75rem;font-weight:700;
+    margin-bottom:16px;text-transform:uppercase;background:#dff1fb;
+    display:inline-block;padding:6px 14px;border-radius:999px;
+  }
+  h1{
+    font-family:Georgia,serif;font-size:clamp(2.2rem,5.5vw,3.6rem);
+    line-height:1.1;margin-bottom:20px;color:var(--text);
+  }
+  h1 em{color:var(--blue);font-style:normal;}
+  .sub{color:var(--muted);font-size:1.05rem;line-height:1.7;margin-bottom:30px;max-width:480px;}
+  .cta-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:34px;}
+  .cta-row .btn{padding:14px 30px;font-size:0.95rem;}
+  .trust-row{display:flex;gap:26px;flex-wrap:wrap;color:var(--muted);font-size:0.85rem;}
+  .trust-row div{display:flex;align-items:center;gap:8px;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+
+  .hero-visual{
+    flex:1;min-width:280px;max-width:420px;
+    background:linear-gradient(160deg,#ffffff,#dff1fb);
+    border-radius:24px;padding:34px;box-shadow:var(--shadow);
+    border:1px solid var(--line);
+  }
+  .player-card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 6px 20px rgba(22,103,158,0.12);}
+  .player-card .art{
+    width:100%;aspect-ratio:1/1;border-radius:14px;
+    background:linear-gradient(135deg,var(--blue),var(--gold));margin-bottom:16px;
+  }
+  .player-card .track-title{font-weight:700;font-size:1rem;margin-bottom:4px;}
+  .player-card .track-artist{color:var(--muted);font-size:0.85rem;margin-bottom:16px;}
+  .bars{display:flex;align-items:flex-end;gap:4px;height:44px;margin-bottom:16px;}
+  .bar{width:5px;background:var(--blue);border-radius:3px;animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scaleY(0.3);}50%{transform:scaleY(1);}}
+  .controls{display:flex;justify-content:center;gap:18px;align-items:center;color:var(--blue-dark);font-size:1.4rem;}
+
+  section{padding:60px 6vw;}
+  .section-head{text-align:center;max-width:600px;margin:0 auto 44px;}
+  .section-head .eyebrow{margin-bottom:12px;}
+  .section-head h2{font-family:Georgia,serif;font-size:2rem;margin-bottom:12px;}
+  .section-head p{color:var(--muted);font-size:1rem;}
+
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  .feature-card{
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:18px;
+    padding:28px 22px;box-shadow:var(--shadow);
+  }
+  .feature-icon{
+    width:44px;height:44px;border-radius:12px;background:#dff1fb;
+    display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+    font-size:1.3rem;color:var(--blue-dark);
+  }
+  .feature-card h3{font-size:1.05rem;margin-bottom:8px;}
+  .feature-card p{color:var(--muted);font-size:0.88rem;line-height:1.55;}
+
+  .stats{
+    background:var(--blue);color:#fff;border-radius:24px;margin:0 6vw;
+    display:flex;justify-content:space-around;padding:40px 20px;flex-wrap:wrap;gap:24px;
+  }
+  .stat{text-align:center;}
+  .stat .num{font-family:Georgia,serif;font-size:2.2rem;font-weight:700;}
+  .stat .label{font-size:0.8rem;opacity:0.85;letter-spacing:0.05em;text-transform:uppercase;}
+
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .plan-card{
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:18px;
+    padding:30px 26px;box-shadow:var(--shadow);display:flex;flex-direction:column;
+  }
+  .plan-card.featured{border:2px solid var(--blue);position:relative;}
+  .plan-card.featured::before{
+    content:"MOST POPULAR";position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+    background:var(--gold);color:#4a2f00;font-size:0.65rem;font-weight:800;
+    padding:5px 12px;border-radius:999px;letter-spacing:0.05em;
+  }
+  .plan-name{font-weight:700;font-size:1.1rem;margin-bottom:6px;}
+  .plan-price{font-family:Georgia,serif;font-size:2rem;margin-bottom:16px;color:var(--blue-dark);}
+  .plan-price span{font-size:0.9rem;color:var(--muted);font-family:'Segoe UI',Arial,sans-serif;}
+  .plan-list{list-style:none;margin-bottom:24px;flex:1;}
+  .plan-list li{color:var(--muted);font-size:0.88rem;padding:6px 0;padding-left:22px;position:relative;}
+  .plan-list li::before{content:"✓";position:absolute;left:0;color:var(--blue);font-weight:700;}
+
+  .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .testimonial{
+    background:var(--bg-soft);border:1px solid var(--line);border-radius:18px;
+    padding:26px;box-shadow:var(--shadow);
+  }
+  .testimonial p{color:var(--text);font-size:0.92rem;line-height:1.6;margin-bottom:16px;}
+  .testimonial .who{display:flex;align-items:center;gap:10px;}
+  .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));}
+  .who-name{font-weight:700;font-size:0.85rem;}
+  .who-role{color:var(--muted);font-size:0.75rem;}
+
+  .cta-banner{
+    background:linear-gradient(120deg,var(--blue),var(--blue-dark));
+    border-radius:24px;margin:0 6vw;padding:50px 6vw;text-align:center;color:#fff;
+  }
+  .cta-banner h2{font-family:Georgia,serif;font-size:1.9rem;margin-bottom:14px;}
+  .cta-banner p{opacity:0.9;margin-bottom:26px;}
+  .cta-banner .btn-solid{background:#fff;color:var(--blue-dark);box-shadow:none;}
+
+  footer{
+    background:var(--bg-soft);border-top:1px solid var(--line);
+    padding:44px 6vw 24px;
+  }
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px;margin-bottom:30px;}
+  .footer-brand p{color:var(--muted);font-size:0.85rem;line-height:1.6;margin-top:12px;max-width:280px;}
+  .footer-col h4{font-size:0.85rem;margin-bottom:14px;}
+  .footer-col a{display:block;color:var(--muted);text-decoration:none;font-size:0.85rem;margin-bottom:10px;}
+  .footer-col a:hover{color:var(--blue-dark);}
+  .footer-bottom{
+    border-top:1px solid var(--line);padding-top:20px;
+    text-align:center;color:var(--muted);font-size:0.78rem;letter-spacing:0.03em;
+  }
+
+  @media(max-width:900px){
+    .features{grid-template-columns:repeat(2,1fr);}
+    .plans{grid-template-columns:1fr;}
+    .testimonials{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    header{flex-direction:column;gap:16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo-wrap"><img src="logo.png" alt="Music Serenia logo" onerror="this.style.display='none'"></div>
+    <div class="brand-name">MUSIC <span>SERENIA</span></div>
+  </div>
+  <nav>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#plans" class="nav-link">Plans</a>
+    <a href="#testimonials" class="nav-link">Reviews</a>
+    <a href="register.html" class="btn btn-outline">Register</a>
+    <a href="signup.html" class="btn btn-solid">Sign Up</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Your sound, your space</div>
+      <h1>Every song finds<br>its <em>quiet moment</em> here.</h1>
+      <p class="sub">Music Serenia is a calm, personal home for the songs you love — stream, organize, and revisit your library without the noise.</p>
+      <div class="cta-row">
+        <a href="signup.html" class="btn btn-solid">Get Started Free</a>
+        <a href="register.html" class="btn btn-outline">I already have an account</a>
+      </div>
+      <div class="trust-row">
+        <div><span class="dot"></span> No ads, ever</div>
+        <div><span class="dot"></span> Unlimited playlists</div>
+        <div><span class="dot"></span> Offline listening</div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="player-card">
+        <div class="art"></div>
+        <div class="track-title">Blue Horizon</div>
+        <div class="track-artist">Serenia Sessions</div>
+        <div class="bars">
+          <div class="bar" style="height:40%;animation-delay:0s;"></div>
+          <div class="bar" style="height:70%;animation-delay:0.1s;"></div>
+          <div class="bar" style="height:100%;animation-delay:0.2s;"></div>
+          <div class="bar" style="height:55%;animation-delay:0.3s;"></div>
+          <div class="bar" style="height:85%;animation-delay:0.4s;"></div>
+          <div class="bar" style="height:35%;animation-delay:0.5s;"></div>
+          <div class="bar" style="height:65%;animation-delay:0.6s;"></div>
+          <div class="bar" style="height:95%;animation-delay:0.7s;"></div>
+          <div class="bar" style="height:50%;animation-delay:0.8s;"></div>
+          <div class="bar" style="height:75%;animation-delay:0.9s;"></div>
+        </div>
+        <div class="controls">
+          <span>⏮</span><span>▶</span><span>⏭</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="section-head">
+      <div class="eyebrow">Why Serenia</div>
+      <h2>Built for people who actually listen</h2>
+      <p>Every feature exists to keep you closer to the music, not further from it.</p>
+    </div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">♪</div>
+        <h3>Smart Library</h3>
+        <p>Automatically organizes your songs by artist, album, and mood.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☁</div>
+        <h3>Cloud Sync</h3>
+        <p>Your playlists follow you across every device, instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⏻</div>
+        <h3>Offline Mode</h3>
+        <p>Download your favorites and listen without a connection.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☺</div>
+        <h3>Mood Playlists</h3>
+        <p>Curated queues that match how you're feeling right now.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="stats">
+      <div class="stat"><div class="num">2M+</div><div class="label">Songs Streamed</div></div>
+      <div class="stat"><div class="num">120K</div><div class="label">Active Listeners</div></div>
+      <div class="stat"><div class="num">4.8★</div><div class="label">Average Rating</div></div>
+      <div class="stat"><div class="num">99.9%</div><div class="label">Uptime</div></div>
+    </div>
+  </section>
+
+  <section id="plans">
+    <div class="section-head">
+      <div class="eyebrow">Plans</div>
+      <h2>Simple pricing, no surprises</h2>
+      <p>Start free, upgrade whenever your library grows.</p>
+    </div>
+    <div class="plans">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0<span>/month</span></div>
+        <ul class="plan-list">
+          <li>Unlimited streaming</li>
+          <li>Basic playlists</li>
+          <li>Standard audio quality</li>
+        </ul>
+        <a href="signup.html" class="btn btn-outline">Choose Free</a>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">$4.99<span>/month</span></div>
+        <ul class="plan-list">
+          <li>Everything in Free</li>
+          <li>Offline downloads</li>
+          <li>High-fidelity audio</li>
+          <li>No ads</li>
+        </ul>
+        <a href="signup.html" class="btn btn-solid">Choose Premium</a>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Family</div>
+        <div class="plan-price">$8.99<span>/month</span></div>
+        <ul class="plan-list">
+          <li>Everything in Premium</li>
+          <li>Up to 6 accounts</li>
+          <li>Individual libraries</li>
+        </ul>
+        <a href="signup.html" class="btn btn-outline">Choose Family</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="section-head">
+      <div class="eyebrow">Loved by listeners</div>
+      <h2>What people are saying</h2>
+    </div>
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>Serenia is the first music app that actually feels calm to use. My playlists just make sense.</p>
+        <div class="who">
+          <div class="avatar"></div>
+          <div><div class="who-name">Aria N.</div><div class="who-role">Daily listener</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p>Offline mode saved me on every long commute. Sound quality is genuinely great too.</p>
+        <div class="who">
+          <div class="avatar"></div>
+          <div><div class="who-name">Devon K.</div><div class="who-role">Premium user</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p>Switched the whole family over. Everyone gets their own space without the clutter.</p>
+        <div class="who">
+          <div class="avatar"></div>
+          <div><div class="who-name">Priya S.</div><div class="who-role">Family plan</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="cta-banner">
+      <h2>Ready to press play?</h2>
+      <p>Create your free account and start building your library today.</p>
+      <a href="signup.html" class="btn btn-solid">Sign Up Free</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="brand">
+        <div class="logo-wrap"><img src="logo.png" alt="logo" onerror="this.style.display='none'"></div>
+        <div class="brand-name">MUSIC <span>SERENIA</span></div>
+      </div>
+      <p>A calm, personal home for the songs you love. Stream, organize, and revisit your library without the noise.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="features.html">Features</a>
+      <a href="plans.html">Plans</a>
+      <a href="signup.html">Sign Up</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="help-center.html">Help Center</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 MUSIC SERENIA — All rights reserved.</div>
+</footer>
+
+</body>
+</html>
